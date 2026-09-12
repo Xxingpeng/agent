@@ -1,0 +1,27 @@
+from pathlib import Path
+
+#1.目录的路径
+ROOT_DIR=Path(__file__).parent.parent.parent
+
+
+DATA_DIR=ROOT_DIR/'data'
+NER_DIR='ner'
+RAW_DIR=DATA_DIR/NER_DIR/'raw'
+PROCESSED_DIR=DATA_DIR/NER_DIR/'processed'
+
+#2.数据文件名和模型名称
+RAW_DATA_DIR=RAW_DIR/'data.json'
+MODEL_NAME='goggle-bert/bert-base-chinese'
+
+#3.超参数
+BARCH_SIZE=8
+EPOCHS=5
+LEARNING_RATE=1e-5
+
+
+SAVE_STEPS=20
+
+
+#4.NER任务分类标签
+LABELS=['B','I','O']
+
