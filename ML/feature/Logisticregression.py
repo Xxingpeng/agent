@@ -1,9 +1,11 @@
 import pandas as pd
 from sklearn.model_selection import train_test_split,GridSearchCV
 from sklearn.compose import ColumnTransformer
-from sklearn.neighbors import KNeighborsClassifier
+from sklearn.linear_model import LogisticRegression
 from sklearn.preprocessing import StandardScaler,OneHotEncoder
 import joblib
+from tornado.gen import multi
+
 from ML.feature.regularization import x_train
 
 dataset=pd.read_csv("../data/heart_disease.csv")
@@ -26,17 +28,9 @@ columnsTransformer=ColumnTransformer(
 
 x_train=columnsTransformer.fit_transform(x_train)
 x_test=columnsTransformer.transform(x_test)
-knn=KNeighborsClassifier(n_neighbors=3)
-knn.fit(x_train,y_train)
-score=knn.score(x_test,y_test)
-print(score)
-# joblib.dump(knn,"../data/knn.joblib")
-params_grid={"n_neighbors":list(range(1,11))}
-grid_cv=GridSearchCV(estimator=knn,param_grid=params_grid,cv=20)
-grid_cv.fit(x_train,y_train)
-print(grid_cv.best_score_)
-print(grid_cv.best_estimator_)
-print(grid_cv.best_params_)
-
-
-
+model=LogisticRegression(
+    solver="saga",
+    max_iter=1000,random_state=42,penalty="l1",C=0.5
+)
+model.fit(x_train,y_train)
+print(model.score(x_test, y_test))
