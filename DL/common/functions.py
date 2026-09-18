@@ -11,6 +11,8 @@ def sigmoid(x):
     return 1/(1+np.exp(-x))
 def ReLU(x):
     return np.maximum(0,x)
+def mean_squared_err(y,t):
+    return 0.5*np.sum((y-t)**2)
 
 if __name__ ==" __main__":
     x=np.array([0,1,2,3,4,5,-1,-2,-3,-4,-5])

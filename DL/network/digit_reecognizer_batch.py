@@ -46,13 +46,12 @@ def forword(network,x):
 
 x_test,y_test=get_data()
 network=init_network()
-y_pred=forword(network,x_test)
-y_pred=np.argmax(y_pred,axis=1)
-
-acc_cnt=np.sum(y_pred==y_test)
+batch_size=100
 n=x_test.shape[0]
-acc=acc_cnt/n
-print("Accuracy:" + acc)
-
-
-
+acc_cnt=0
+for i in range(0,n,batch_size):
+    x_batch=x_test[i,i+batch_size]
+    Y_batch=y_test[i,i+batch_size]
+    #前向传播
+    y_proba=forword(network,x_batch)
+    y_pred=np.argmax(y_proba,axis=1)
