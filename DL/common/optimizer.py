@@ -54,3 +54,24 @@ class RMSProp:
         for key in params.keys():
             self.h[key] += grads[key] * grads[key]
             params[key] -= self.decay*self.h[key]+(1-self.decay)*grads[key]*grads[key]
+class Adam:
+    def __init__(self,lr=0.01,beta1=0.9,beta2=0.999):
+        self.lr = lr
+        self.beta1 = beta1
+        self.beta2 = beta2
+        self.iter = 0
+        self.m = None
+        self.v = None
+    def update(self,params,grads):
+        if self.v is None:
+            self.v,self.h={},{}
+            for key,val in params.items():
+                self.m[key]=np.zeros_like(val)
+                self.v[key]=np.zeros_like(val)
+
+        self.t+=1
+        lr_t=self.lr*np.sqrt(1-self.beta2**self.t)/(1-self.beta1**self.t)
+        for key in params.keys():
+            self.v[key]=self.beta1*self.v[key]+(1-self.beta1)*grads[key]
+            self.h[key]=self.beta2*self.h[key]+(1-self.beta2)*(grads[key]**2)
+            params[key]-=lr_t*self.v[key]/(np.sqrt(self.h[key])+1e-8)
