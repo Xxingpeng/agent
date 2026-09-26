@@ -58,6 +58,7 @@ train_loader=DataLoader(train_dataset,batch_size=batch_size,shuffle=True)
 test_loader=DataLoader(test_dataset,batch_size=batch_size,shuffle=False)
 optimizer=optim.Adam(model.parameters(),lr=lr)
 def log_rmse(pred,target):
+    pred=torch.clamp(pred,min=1.0,max=float("inf"))
     mse=nn.MSELoss()
     loss_value=mse(torch.log(pred),torch.log(target))
     return torch.sqrt(loss_value)
@@ -78,6 +79,17 @@ for epoch in range(epoch_num):
 
     this_train_loss=train_loss_total/len(train_dataset)
     train_loss_list.append(this_train_loss)
+    model.eval()
+    test_loss_total=0
+    with torch.no_grad():
+        for x,y in test_loader:
+            x,y=x.to(device),y.to(device)
+            y_pred=model(x)
+            loss_value=log_rmse(y_pred.squeeze(),y)
+            test_loss_total+=loss_value.item()*x.shape[0]
+
+    this_test_loss=test_loss_total/len(test_dataset)
+    test_loss_list.append(this_test_loss)
 
 
 
